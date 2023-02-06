@@ -6,7 +6,7 @@ attributes/methods for other classes.
 
 from uuid import uuid4
 from datetime import datetime
-import models
+import models import storage
 
 
 class BaseModel():
@@ -17,18 +17,19 @@ class BaseModel():
 
     def __init__(self, *args, **kwargs):
         """
-        Instanitation
+        Initializes the instances attributes
         """
-        if kwargs is not None and len(kwargs) != 0:
+        if kwargs:
             for key, value in kwargs.items():
                 if key != "__class__":
-                    if key == "created_at" or key == "updated_at":
-                        value = datetime.fromisoformat(value)
                     setattr(self, key, value)
+            s = '%Y-%m-%dT%H:%M:%S.%f'
+            self.created_at = datetime.strptime(self.created_at, s)
+            self.updated_at = datetime.strptime(self.updated_at, s)
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
-            self.updated_at = datetime.now()
+            self.updated_at = self.created_at
             models.storage.new(self)
 
     def __str__(self):
@@ -53,12 +54,8 @@ class BaseModel():
         returns a dictionary containing
         all keys/values of __dict__ of the instance
         """
-
-        new_dict = {}
-        for key, value in self.__dict__.items():
-            if key == "created_at" or key == "updated_at":
-                value = value.isoformat()
-            new_dict[key] = value
-        new_dict["__class__"] = self.__class__.__name__
-
-        return (new_dict)
+myDict = self.__dict__.copy()
+        myDict['__class__'] = self.__class__.__name__
+        myDict['created_at'] = self.created_at.isoformat()
+        myDict['updated_at'] = self.updated_at.isoformat()
+        return myDict
