@@ -38,24 +38,24 @@ class HBNBCommand(cmd.Cmd):
 
         sys.exit()
 
-     def emptyline(self):
-         """
-         Do nothing
-         """
+    def emptyline(self):
 
-         pass
+        """
+        Do nothing
+        """
 
-     def do_create(self,arg):
-         """ Creates a new instance of class and prints the id. 
+    pass
 
- Usage: create <class name>
-         """
+    def do_create(self, arg):
+        """ Creates a new instance of class and prints the id.
+Usage: create <class name>
+        """
 
-         args = shlex.split(arg)
-         if args == []:
-             print("** class name missing **")
-         elif args[0] not in classes:
-             print("** class doesn't exist **")
+        args = shlex.split(arg)
+        if args == []:
+            print("** class name missing **")
+        elif args[0] not in classes:
+            print("** class doesn't exist **")
         else:
             new = eval(args[0])()
             new.save()
@@ -108,8 +108,8 @@ Usage: show <class name> <id>
     def do_all(self, arg):
         """Prints all string representation of all\
 instances based or not on the class name.
-
-Usage: all <class name> - to print all instances of a class\ or all - to print all instances.
+Usage: all <class name> - to print all instances of a class
+or all - to print all instances.
 """
 
         args = shlex.split(arg)
@@ -176,7 +176,7 @@ Usage: update <class name> <id> <attribute name> "<attribute value>"
                 return
             elif command == "count()":
                 for instances in storage.all():
-                    if instances.split(".")[0] == cls_name:~
+                    if instances.split(".")[0] == cls_name:
                         count += 1
                     print(count)
                     return
@@ -187,8 +187,8 @@ Usage: update <class name> <id> <attribute name> "<attribute value>"
                     showArg = f"{cls_name} {id}"
                     self.do_show(showArg)
                     return
-                if cmmd == "destroy" and args[-1] == ")":01~
-                id = args[:-1]
+                if cmmd == "destroy" and args[-1] == ")":
+                    id = args[:-1]
                 destroyArg = f"{cls_name} {id}"
                 self.do_destroy(destroyArg)
                 return
@@ -205,4 +205,3 @@ Usage: update <class name> <id> <attribute name> "<attribute value>"
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
-                
