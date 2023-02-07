@@ -7,8 +7,9 @@ from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
-        """
-        Class to represent the amenities
-        """
 
-        name = ""
+    """
+    Class to represent the amenities
+    """
+
+    name = ""
