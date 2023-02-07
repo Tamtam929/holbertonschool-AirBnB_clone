@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 """
-City class
+Class state
 """
 
 from models.base_model import BaseModel
 
 
-class City(BaseModel):
+class State(BaseModel):
     """
-    Class to represent the cities
+    Class to represent the states
     """
 
-    state_id = ""
     name = ""
