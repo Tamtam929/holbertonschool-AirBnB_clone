@@ -54,10 +54,5 @@ class BaseModel():
         all keys/values of __dict__ of the instance
         """
 
-        new_dict = {}
-        for key, value in self.__dict__.items():
-            if key == "created_at" or key == "updated_at":
-                value = value.isoformat()
-            new_dict[key] = value
-
-            return (new_dict)
+def to_dict(self):
+    """Dictionary of """

@@ -56,5 +56,5 @@ class FileStorage:
                 for key, value in dict_obj.items():
                     FileStorage.__objects[key] =\
                             eval(value["__class__"])(**value)
-            except Exception:
-                pass
+        except Exception:
+            pass
