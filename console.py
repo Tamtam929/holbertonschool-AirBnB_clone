@@ -1,206 +1,185 @@
 #!/usr/bin/python3
 """
-Class HBNBCommand
+    Project 0x00. AirBnB clone - The console
+        console.py
+            entry point for command interpreter
 """
 
 import cmd
-import sys
+import re
 import shlex
-from models import storage
-from models.base_model import BaseModel
-from models.user import User
-from models.state import State
-from models.city import City
+import models
+from datetime import datetime
 from models.amenity import Amenity
+from models.base_model import BaseModel
+from models.city import City
 from models.place import Place
 from models.review import Review
-
-
-classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
+from models.state import State
+from models.user import User
+from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
-    """
-    Entry point of the command interpreter
-    """
+    """Class HBNBCommand contains the entry point of the command interpreter"""
+    prompt = '(hbnb) '
+    classes = {
+            "Amenity": Amenity,
+            "BaseModel": BaseModel,
+            "City": City,
+            "Place": Place,
+            "Review": Review,
+            "State": State,
+            "User": User}
 
-    prompt = "(hbnb) "
+    def do_quit(self, args):
+        """quit command to exit the program"""
+        raise SystemExit
 
-    def do_quit(self, arg):
-        """Quit command to exit the program
-        """
-
-        sys.exit()
-
-    def do_EOF(self, arg):
-        """Terminates the program Usage: ctrl+D or writting EOF
-        """
-
-        sys.exit()
+    def do_EOF(self, args):
+        """EOF command to exit the program"""
+        raise SystemExit
 
     def emptyline(self):
+        """Empty line or ENTER entered by user should not execute anything"""
+        return False
 
+    def do_create(self, args):
         """
-        Do nothing
+        checks if given a class name, if not,
+            prints ** class name missing **
+        if so, creates new instance and prints its id,
+        if class name doesn't exist,
+            prints ** class name doesn't exist**
         """
-
-    pass
-
-    def do_create(self, arg):
-        """ Creates a new instance of class and prints the id.
-Usage: create <class name>
-        """
-
-        args = shlex.split(arg)
-        if args == []:
-            print("** class name missing **")
-        elif args[0] not in classes:
-            print("** class doesn't exist **")
-        else:
-            new = eval(args[0])()
-            new.save()
-            print(new.id)
-
-        def do_show(self, arg):
-            """Prints the string representation of an instance\
-                    based on the class name and id.
-
-based on the class name and id.
-
-Usage: show <class name> <id>
-        """
-
-        args = shlex.split(arg)
-        if len(args) > 1:
-            key = args[0] + "." + args[1]
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] not in classes:
-            print("** class doesn't exist **")
-        elif len(args) == 1:
-            print("** instance id missing **")
-        elif key not in storage.all():
-            print("** no instance found **")
+            return False
+        elif args in HBNBCommand.classes.keys():
+            instance = HBNBCommand.classes[args]()
+            instance.save()
+            print(instance.id)
         else:
-            print(storage.all()[key])
+            print("** class doesn't exist **")
 
-    def do_destroy(self, arg):
-        """Deletes an instance based on the class name and id.
-
-        Usage: destroy <class name> <id>
-        """
-
-        args = shlex.split(arg)
-        if len(args) > 1:
-            key = args[0] + "." + args[1]
-        if len(args) == 0:
+    def do_show(self, args):
+        """Based on class name, prints string representation of an instance"""
+        # creates a list of strings from args and assigns to parse_args
+        parse_args = args.split()
+        if len(parse_args) == 0:
+            # if no argument is given,
             print("** class name missing **")
-        elif args[0] not in classes:
-            print("** class doesn't exist **")
-        elif len(args) == 1:
-            print("** instance id missing **")
-        elif key not in storage.all():
-            print("** no instance found **")
-        else:
-            del storage.all()[key]
-            storage.save()
+            return
 
-    def do_all(self, arg):
-        """Prints all string representation of all\
-instances based or not on the class name.
-Usage: all <class name> - to print all instances of a class
-or all - to print all instances.
-"""
-
-        args = shlex.split(arg)
-        if args:
-            if args[0] not in classes:
+        elif len(parse_args) < 2:
+            # if parse_args is less than 2, input is incomplete, or
+            if (parse_args[0] in HBNBCommand.classes) is True:
+                # if no id is given, print
+                print("** instance id missing **")
+                return
+            else:
+                # if not given a valid class name
                 print("** class doesn't exist **")
                 return
-            inst_list = []
-            for key in storage.all():
-                cls_name = key.split(".")[0]
-                if cls_name == args[0]:
-                    inst_list.append(str(storage.all()[key]))
-                    print(inst_list)
-                    return
-                inst_list = []
-            for key in storage.all():
-                inst_list.append(str(storage.all()[key]))
-            print(inst_list)
-
-        def do_update(self, arg):
-            """Updates an instance based on the class name\
-and id by adding or updating attribute.
-
-Usage: update <class name> <id> <attribute name> "<attribute value>"
-        """
-
-        args = shlex.split(arg)
-        if len(args) > 1:
-            key = args[0] + "." + args[1]
-        if len(args) == 0:
-            print("** class name missing **")
-        elif args[0] not in classes:
-            print("** class doesn't exist **")
-        elif len(args) == 1:
-            print("** instance id missing **")
-        elif key not in storage.all():
-            print("** no instance found **")
-        elif len(args) == 2:
-            print("** attribute name missing **")
-        elif len(args) == 3:
-            print("** value missing **")
-        else:
-            setattr(storage.all()[key], args[2], args[3])
-            storage.all()[key].save()
-
-    def default(self, arg):
-        """
-        Implementation of:
-        <class name>.all() - to retrieve all instances of a class
-        <class name>.count() - to retrieve the number of instances of a class
-        <class name>.show(<id>) - to retrieve an instance based on its ID
-        <class name>.destroy(<id>) - to destroy an instance based on his ID
-        <class name>.update(<id>, <attribute name>, <attribute value>)
-        """
-
-        count = 0
 
         try:
-            args = arg.split(".")
-            cls_name = args[0]
-            command = args[1]
-            if command == "all()":
-                self.do_all(cls_name)
-                return
-            elif command == "count()":
-                for instances in storage.all():
-                    if instances.split(".")[0] == cls_name:
-                        count += 1
-                    print(count)
-                    return
-                cmmd = command.split("(")[0]
-                args = command.split("(")[1]
-                if cmmd == "show" and args[-1] == ")":
-                    id = args[:-1]
-                    showArg = f"{cls_name} {id}"
-                    self.do_show(showArg)
-                    return
-                if cmmd == "destroy" and args[-1] == ")":
-                    id = args[:-1]
-                destroyArg = f"{cls_name} {id}"
-                self.do_destroy(destroyArg)
-                return
-        if cmmd == "update" and args[-1] == ")":
-            args = command.split("(")[1]
-            args = args.replace(",", "")
-            updateArg = f"{cls_name} {args[:-1]}"
-            self.do_update(updateArg)
+            # if parse args is within dict
+            if (parse_args[0] in HBNBCommand.classes) is True:
+                # string format: 'class.id'
+                class_id = '.'.join(parse_args)
+                objs = storage.all()
+                # search in JSON file with the key 'class.id'
+                print(objs[class_id])
+            else:
+                print("** class doesn't exist **")
+        except Exception:
+            print("** no instance found **")
+
+    def do_destroy(self, args):
+        """Based on an class name, deletes an instance"""
+        # checks if args is empty or None
+        if args == "" or args is None:
+            print("** class name missing **")
+        else:
+            # checks if args is in class_dict, or less than 2
+            parsed = args.split(' ')
+            if parsed[0] not in HBNBCommand.classes.keys():
+                print("** class doesn't exist **")
+            elif len(parsed) < 2:
+                print("** instance id missing **")
+            else:
+                # checks key for proper format, and if its found
+                key = "{}.{}".format(parsed[0], parsed[1])
+                if key not in storage.all():
+                    print("** no instance found **")
+                else:
+                    del storage.all()[key]
+                    storage.save()
+
+    def do_all(self, args):
+        """
+        Prints all string representation of all instances
+        based or not on the class name
+        Structure: all [class name] or all
+        """
+        # prints the whole file
+        args = shlex.split(args)
+        obj_list = []
+        if len(args) == 0:
+            for value in models.storage.all().values():
+                obj_list.append(str(value))
+            print("[", end="")
+            print(", ".join(obj_list), end="")
+            print("]")
+        elif args[0] in HBNBCommand.classes:
+            for key in models.storage.all():
+                if args[0] in key:
+                    obj_list.append(str(models.storage.all()[key]))
+            print("[", end="")
+            print(", ".join(obj_list), end="")
+            print("]")
+        else:
+            print("** class doesn't exist **")
+
+    def do_update(self, args):
+        """
+        Updates an instance based on the class name and id
+        """
+        prompt_args = args.split()
+
+        if len(prompt_args) == 0:
+            # if no argument is passed, print
+            print("** class name missing **")
             return
-        print(f"*** Unknown syntax {arg}")
-    except Exception:
-        print(f"*** Unknown syntax {arg}")
+
+        if (prompt_args[0] in self.classes) is True:
+            # checks if the class name exists
+            if len(prompt_args) < 2:
+                print("** instance id missing **")
+                return
+        else:
+            # if class name doesn't exist, print
+            print("** class doesn't exist **")
+            return
+        # stores strings from split to key
+        key = str(prompt_args[0]) + '.' + str(prompt_args[1])
+        objs = storage.all()
+
+        if (key in objs) is False:
+            # if value stored in key is within dictonary
+            print("** no instance found **")
+            return
+        elif len(prompt_args) < 3:
+            # if args contains class name but no attribute, print
+            print("** attribute name missing **")
+            return
+        elif len(prompt_args) < 4:
+            # if args contains class name, id, and attribute,
+            # but no value to update
+            print("** value missing **")
+            return
+        # using eval, we cast to correct attribute type
+        objs[key].__dict__[prompt_args[2]] = eval(prompt_args[3])
 
 
 if __name__ == '__main__':
