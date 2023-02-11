@@ -5,7 +5,7 @@
 
 ## ***About this project***
 This is the first step of our first full web application: the AirBnB clone. Our console is able to work in interactive mode 
-but also in non-interactive mode. It main goal is to manage the AirBnB objects. It is capable of creating new objects, 
+but also in non-interactive mode. Its main goal is to manage the AirBnB objects. It is capable of creating new objects, 
 retrieving an object from a file, doing operations on objects like counting and computing stats, updating attributes of an object
 and destroying them.
 ## ***Learning objectives of this project***
@@ -18,7 +18,7 @@ and destroying them.
 ## ***How to start and use the console***
 - Clone our directory to your working space:
 ```bash
-git clone https://github.com/MatiasMtz/holbertonschool-AirBnB_clone.git
+git clone https://github.com/NikkiMerena/holbertonschool-AirBnB_clone.git
 ```
 - Execute the console: 
 ```bash
@@ -30,7 +30,7 @@ ex.: (hbnb) create BaseModel
 ```
 - If you want to work in non-interactive mode:
 ```bash
-ex.: maxmat@ubuntu:~/AirBnB_clone$ echo "<command>" | ./console.py
+ex.: root@7739f133c5e4:~/holbertonschool-AirBnB_clone$ echo "<command>" | ./console.py
 ```
 
 ## ***Implemented commands***
@@ -66,7 +66,7 @@ ex.: maxmat@ubuntu:~/AirBnB_clone$ echo "<command>" | ./console.py
 
 ## ***Examples***:
 ```
-maxmat@ubuntu:~/AirBnB_clone$$ ./console.py
+root@7739f133c5e4:~/holbertonschool-AirBnB_clone$$ ./console.py
 ```
 - Help
 ```
@@ -85,7 +85,7 @@ Quit command to exit the program
 - Quit
 ```
 (hbnb) quit 
-maxmat@ubuntu:~/AirBnB_clone$$ 
+root@7739f133c5e4:~/holbertonschool-AirBnB_clone$$ 
 ```
 - Create
 ```
